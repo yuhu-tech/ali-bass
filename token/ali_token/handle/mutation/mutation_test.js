@@ -25,8 +25,8 @@ async function Transfer() {
 
 async function NativeDepositData() {
     var data = {
-        name: '小潘',
-        age: 18 
+        name: '老陆',
+        age: 12
     }
     var dataStr = JSON.stringify(data)
     var hashData = await utils.Str2Hex(dataStr)

@@ -19,8 +19,9 @@ async function QueryAccount(){
 }
 
 async function QueryTransaction(){
-    var txhash = '0x80a86a068669c6f0e4178ba4fb9165d653a5ce370751b9e1e037d641a433a5c5'
+    var txhash = '0x9803354c50bdb10fb0c12792fa7c1f71a11aeb458c8289a18260d673f77b0eb9'
     var hashData = await query.QueryTransaction(txhash)
+    console.log(hashData)
     var res = await utils.Hex2Str(hashData.originData)
     var data = JSON.parse(res.str)
     console.log(data)
