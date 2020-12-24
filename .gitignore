@@ -59,3 +59,12 @@ typings/
 
 # next.js build output
 .next
+
+# Test  directory
+test
+
+# Cert files
+certs
+
+# conf
+config.js
