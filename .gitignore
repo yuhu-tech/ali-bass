@@ -65,3 +65,6 @@ test
 
 # Cert files
 certs
+
+# conf
+config.js
