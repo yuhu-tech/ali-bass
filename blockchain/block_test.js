@@ -6,4 +6,4 @@ async function QueryLastBlock() {
     process.exit()
 }
 
-QueryLastBlock()
+// QueryLastBlock()

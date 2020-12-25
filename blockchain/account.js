@@ -35,7 +35,7 @@ function QueryAccount(userId) {
                 reject(Error('query account failed'))
             } else {
                 var identity = data.data.identity
-                resolve({ identity })
+                resolve(identity)
             }
         })
     })
