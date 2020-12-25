@@ -9,27 +9,33 @@ function QueryTransaction(txHash) {
             if (err != null || data.return_code != 0) {
                 reject(Error('query transaction failed', err))
             } else {
-                var originData = data.tx.data
-                resolve({ originData })
+                resolve(data)
             }
         })
-    })
+    }).then(
+        res => {
+            return res
+        }
+    )
 }
 
 //通过 QueryTransaction 查询到存证交易，证明交易发生，通过 QueryTransactionReceipt 可以验证交易成功（return_code 为0），共识后进入区块。
-function QueryTransactionReceipt() {
+function QueryTransactionReceipt(txhash) {
     return new Promise((resolve, reject) => {
         env.chain.ctr.QueryTransactionReceipt({
-            hash: data.txhash
+            hash: txhash
         }, (err, data) => {
             if (err != null || data.return_code != 0) {
                 reject(Error('query transaction receipt failed', err))
             } else {
-                var result = data.receipt.result
-                resolve({ result })
+                resolve( data )
             }
         })
-    })
+    }).then(
+        res => {
+            return res
+        }
+    )
 }
 
 module.exports = {

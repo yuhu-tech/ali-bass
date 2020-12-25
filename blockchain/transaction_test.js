@@ -1,13 +1,16 @@
 const transaction = require('./transaction')
-const utils = require('../utils/utils')
 
-async function QueryTransaction(){
-    var txhash = '0x9803354c50bdb10fb0c12792fa7c1f71a11aeb458c8289a18260d673f77b0eb9'
-    var hashData = await transaction.QueryTransaction(txhash)
-    console.log(hashData)
-    var res = await utils.Hex2Str(hashData.originData)
-    var data = JSON.parse(res.str)
-    console.log(data)
+async function QueryTransaction() {
+    var res = await transaction.QueryTransaction('0x553b89b08b28dd920efe27388a2fa206a6aaf6ec254d0a72ca2538e285c1d78f')
+    console.log(res)
+    process.exit()
 }
 
-QueryTransaction()
+async function QueryTransactionReceipt(params) {
+    var res = await transaction.QueryTransactionReceipt('0x553b89b08b28dd920efe27388a2fa206a6aaf6ec254d0a72ca2538e285c1d78f')
+    console.log(res)
+    process.exit()
+}
+
+// QueryTransaction()
+// QueryTransactionReceipt()
