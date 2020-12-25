@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
-import './zeppelin-solidity/contracts/ownership/Ownable.sol';
-import './zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
+import '../zeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
 
 contract MyToken is StandardToken, Ownable {
   string public constant name = 'Token Bank Asset';

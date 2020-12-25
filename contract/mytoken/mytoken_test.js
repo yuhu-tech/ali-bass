@@ -1,15 +1,10 @@
-const mutation = require('./mutation')
+const mytoken = require('./mytoken')
 const utils = require('../../utils/utils')
-
-async function CreateAccount() {
-    var res = await mutation.CreateAccount('xilai')
-    console.log(res)
-}
 
 async function Issue() {
     var to = '0xc1437b3992fd172ca55a676e5d6e44593e48ba1784d6597561fdc3a7c9ba78bd'
     var value = 1000
-    var res = await mutation.Issue(to, value)
+    var res = await mytoken.MyToken.Issue(to, value)
     console.log(res)
 }
 
@@ -19,7 +14,7 @@ async function Transfer() {
     var privateKey = '526c900b4c65ff01bab2cce2710fdf1e32578afdc3358524a36256013db5287f'
     var to = '0x891c9892af0cc8a50c4198bafdbe79d15310aabf669c4826302700ca08ea1228'
     var value = 100
-    var res = await mutation.Transfer(from, publicKey, privateKey, to, value)
+    var res = await mytoken.MyToken.Transfer(from, publicKey, privateKey, to, value)
     console.log(res)
 }
 
@@ -30,11 +25,24 @@ async function NativeDepositData() {
     }
     var dataStr = JSON.stringify(data)
     var hashData = await utils.Str2Hex(dataStr)
-    var res = await mutation.NativeDepositData(hashData.hex)
+    var res = await mytoken.MyToken.NativeDepositData(hashData.hex)
     console.log(res)
 }
 
-//CreateAccount()
-//Issue()
-//Transfer()
+async function QueryTotalSupply() {
+    var res = await mytoken.MyToken.QueryTotalSuppy()
+        console.log(res)
+}
+
+async function QueryBalanceOf(){
+    var userId = '0xc1437b3992fd172ca55a676e5d6e44593e48ba1784d6597561fdc3a7c9ba78bd'
+    var res = await mytoken.MyToken.QueryBalanceOf(userId)
+    console.log(res)
+}
+
+
+Issue()
+Transfer()
 NativeDepositData()
+QueryTotalSupply()
+QueryBalanceOf()
