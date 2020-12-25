@@ -7,7 +7,7 @@
     "babelify": "~7.3.0",
     "bluebird": "^3.5.1",
     "browserify": "~14.3.0",
-    "jquery": "~3.2.1",
+    "jquery": "~3.5.0",
     "truffle": "^4.0.4",
     "truffle-wallet-provider": "0.0.5",
     "watchify": "~3.9.0",
