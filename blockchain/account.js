@@ -34,8 +34,7 @@ function QueryAccount(userId) {
             if (err != null || data.return_code != 0) {
                 reject(Error('query account failed'))
             } else {
-                var identity = data.data.identity
-                resolve(identity)
+                resolve(data)
             }
         })
     })
