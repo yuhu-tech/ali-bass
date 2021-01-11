@@ -2,12 +2,19 @@ const Chain = require("@alipay/mychain/index.node")
 const fs = require('fs')
 const path = require('path')
 const env = require('../../env/env')
+const conf = require('../../conf/config')
 const { reject } = require("bluebird")
 const abi = JSON.parse(fs.readFileSync(path.join(__dirname, '../../generate/token/solidity_token_Token_sol_Token.abi'), String))
 const bytecode = fs.readFileSync(path.join(__dirname, '../../generate/token/solidity_token_Token_sol_Token.bin'))
 
-function Deploy(contractName, from, name, symbol, decimals, totalSupply) {
+function Deploy(contractName, from, priK, pubK, name, symbol, decimals, totalSupply) {
     return new Promise((resolve, reject) => {
+        env.opt.userPublicKey = pubK
+        env.opt.userPrivateKey = priK
+        env.opt.userRecoverPublicKey = pubK
+        env.opt.userRecoverPrivateKey = priK
+        env.chain.setUserKey(env.opt)
+        env.chain.setUserRecoverKey(env.opt)
         let tokenContract = env.chain.ctr.contract(contractName, abi)
         tokenContract.new(bytecode, {
             from: from,
@@ -23,10 +30,10 @@ function Deploy(contractName, from, name, symbol, decimals, totalSupply) {
 
 }
 
-function Name(contractName, from) {
+function Name(contractName) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.name({ from: from }, (err, output, data) => {
+        tokenContract.name({ from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -36,10 +43,10 @@ function Name(contractName, from) {
     })
 }
 
-function Symbol(contractName, from) {
+function Symbol(contractName) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.symbol({ from: from }, (err, output, data) => {
+        tokenContract.symbol({ from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -49,10 +56,10 @@ function Symbol(contractName, from) {
     })
 }
 
-function Decimals(contractName, from) {
+function Decimals(contractName) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.decimals({ from: from }, (err, output, data) => {
+        tokenContract.decimals({ from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -62,10 +69,10 @@ function Decimals(contractName, from) {
     })
 }
 
-function TotalSupply(contractName, from) {
+function TotalSupply(contractName) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.totalSupply({ from: from }, (err, output, data) => {
+        tokenContract.totalSupply({ from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -75,10 +82,10 @@ function TotalSupply(contractName, from) {
     })
 }
 
-function BalanceOf(contractName, from, account) {
+function BalanceOf(contractName, account) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.balanceOf(account, { from: from }, (err, output, data) => {
+        tokenContract.balanceOf(account, { from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -88,10 +95,10 @@ function BalanceOf(contractName, from, account) {
     })
 }
 
-function IsOwner(contractName, from) {
+function IsOwner(contractName) {
     return new Promise((resolve, reject) => {
         let tokenContract = env.chain.ctr.contract(contractName, abi)
-        tokenContract.isOwner({ from: from }, (err, output, data) => {
+        tokenContract.isOwner({ from: conf.AccountId }, (err, output, data) => {
             if (err != null) {
                 reject(err)
             } else {
@@ -101,23 +108,44 @@ function IsOwner(contractName, from) {
     })
 }
 
-function Approve(contractName, from) {
-    // TODO
+function Allowance(contractName, owner, spender) {
+    return new Promise((resolve, reject) => {
+        let tokenContract = env.chain.ctr.contract(contractName, abi)
+        tokenContract.allowance(owner, spender, { from: conf.AccountId }, (err, output, data) => {
+            if (err != null) {
+                reject(err)
+            } else {
+                resolve(output)
+            }
+        })
+    })
 }
 
-/*
- * from 转账发起用户id或者identity
- * publicKey 用户公钥
- * privateKey 用户私钥
- * to 转账目标账户identity
- * value 转账数量
-*/
+function Approve(contractName, from, priK, pubK, to, value) {
+    return new Promise((resolve, reject) => {
+        env.opt.userPublicKey = pubK
+        env.opt.userPrivateKey = priK
+        env.opt.userRecoverPublicKey = pubK
+        env.opt.userRecoverPrivateKey = priK
+        env.chain.setUserKey(env.opt)
+        env.chain.setUserRecoverKey(env.opt)
+        let myContract = env.chain.ctr.contract(contractName, abi)
+        myContract.approve(to, value, { from: from }, (err, output, data) => {
+            if (err != null) {
+                reject(err)
+            } else {
+                resolve(output)
+            }
+        })
+    })
+}
+
 function Transfer(contractName, from, priK, pubK, to, value) {
     return new Promise((resolve, reject) => {
-        env.opt.userPublicKey = publicKey
-        env.opt.userPrivateKey = privateKey
-        env.opt.userRecoverPublicKey = publicKey
-        env.opt.userRecoverPrivateKey = privateKey
+        env.opt.userPublicKey = pubK
+        env.opt.userPrivateKey = priK
+        env.opt.userRecoverPublicKey = pubK
+        env.opt.userRecoverPrivateKey = priK
         env.chain.setUserKey(env.opt)
         env.chain.setUserRecoverKey(env.opt)
 
@@ -126,8 +154,7 @@ function Transfer(contractName, from, priK, pubK, to, value) {
             if (err != null) {
                 reject(err)
             } else {
-                console.log("data: ", data)
-                console.log("output: ", output)
+                resolve(output)
             }
         })
     })
@@ -151,6 +178,7 @@ module.exports = {
     TotalSupply,
     BalanceOf,
     IsOwner,
+    Allowance,
     Approve,
     Transfer,
     TransferFrom,
