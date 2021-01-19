@@ -1,4 +1,4 @@
-const Chain = require("@alipay/mychain/index.node") //在node 环境使用 TLS 协议
+const Chain = require("../alipay-chain/index.node") //在node 环境使用 TLS 协议
 const fs = require("fs")
 const path = require('path')
 const conf = require("../conf/config")
@@ -24,7 +24,7 @@ const opt = {
   passphrase: conf.Passphrase                  // client.key 密码
 }
 
-const chain = Chain(opt)
+const chain = Chain(opt);
 
 module.exports = {
   opt,
