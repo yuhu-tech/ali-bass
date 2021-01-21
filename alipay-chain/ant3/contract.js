@@ -49,7 +49,7 @@ function _createClass(t, e, r) {
 var Util = require("@alipay/mychain/build/ant3/util"),
   Errors = require("@alipay/mychain/build/ant3/errors"),
   VmType = require("@alipay/mychain/build/ant3/config/vmType"),
-  SolContract = require("@alipay/mychain/build/ant3/solContract"),
+  SolContract = require("./solContract"),
   WasmContract = require("@alipay/mychain/build/ant3/wasmContract");
 function paramCheck(t, e) {
   if (t)
@@ -256,51 +256,56 @@ var Contract = (function () {
                   (r.apiName = "CallContract"));
               var u = !1;
               r.encrypt && (u = !0),
-                n.call(this.client, r, function (t, e, r) {
-                  if (Util.isFunction(l)) {
-                    if (t) return void l(t, null, e, r);
-                    if (0 !== e.return_code)
-                      return void l(
-                        Errors.returnCode(e.return_code),
-                        null,
-                        e,
-                        r
-                      );
-                    if (!e.receipt)
-                      return void l(new Error("Receipt is null"), null, e, r);
-                    if (10201 === e.receipt.result) {
-                      var n = null;
-                      try {
-                        n = i.formatRequireOutput(e.receipt.output);
-                      } catch (t) {
-                        n = null;
+                n.call(
+                  this.client,
+                  r,
+                  function (t, e, r) {
+                    if (Util.isFunction(l)) {
+                      if (t) return void l(t, null, e, r);
+                      if (0 !== e.return_code)
+                        return void l(
+                          Errors.returnCode(e.return_code),
+                          null,
+                          e,
+                          r
+                        );
+                      if (!e.receipt)
+                        return void l(new Error("Receipt is null"), null, e, r);
+                      if (10201 === e.receipt.result) {
+                        var n = null;
+                        try {
+                          n = i.formatRequireOutput(e.receipt.output);
+                        } catch (t) {
+                          n = null;
+                        }
+                        return void l(
+                          Errors.receiptResult(e.receipt.result),
+                          n,
+                          e,
+                          r
+                        );
                       }
-                      return void l(
-                        Errors.receiptResult(e.receipt.result),
-                        n,
-                        e,
-                        r
-                      );
+                      if (0 !== e.receipt.result)
+                        return void l(
+                          Errors.receiptResult(e.receipt.result),
+                          null,
+                          e,
+                          r
+                        );
+                      if (u) return void l(t, e.receipt.output, e, r);
+                      e = i.formatLog(e);
+                      var a = t,
+                        c = null;
+                      try {
+                        c = i.contractTpl.unpackApiOutput(e.receipt.output, o);
+                      } catch (t) {
+                        a = t;
+                      }
+                      l(a, c, e, r);
                     }
-                    if (0 !== e.receipt.result)
-                      return void l(
-                        Errors.receiptResult(e.receipt.result),
-                        null,
-                        e,
-                        r
-                      );
-                    if (u) return void l(t, e.receipt.output, e, r);
-                    e = i.formatLog(e);
-                    var a = t,
-                      c = null;
-                    try {
-                      c = i.contractTpl.unpackApiOutput(e.receipt.output, o);
-                    } catch (t) {
-                      a = t;
-                    }
-                    l(a, c, e, r);
-                  }
-                });
+                  },
+                  o.hook
+                );
             }
           else
             Util.isFunction(l) &&

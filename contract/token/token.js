@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const env = require("../../env/env");
 const conf = require("../../conf/config");
-const { reject } = require("bluebird");
 const abi = JSON.parse(
   fs.readFileSync(
     path.join(
@@ -50,8 +49,8 @@ function Deploy(
           resolve(data);
         }
       },
-      (txhash) => { // hook function
-        console.log("===========txhash: ", txhash)
+      (txhash) => {
+        console.log("===========txhash: ", txhash);
       }
     );
   });
@@ -186,13 +185,21 @@ function Transfer(contractName, from, priK, pubK, to, value) {
     env.chain.setUserRecoverKey(env.opt);
 
     let myContract = env.chain.ctr.contract(contractName, abi);
-    myContract.transfer(to, value, { from: from }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    myContract.transfer(
+      (txhash) => {
+        console.log("========== Transfer txhash: ", txhash); // 调用合约内非 constant 方法，第一个参数必须是 hook 函数
+      },
+      to,
+      value,
+      { from: from },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
