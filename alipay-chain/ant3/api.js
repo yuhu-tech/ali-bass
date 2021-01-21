@@ -272,18 +272,13 @@ var APINAME = require("@alipay/mychain/build/ant3/config/apiName"),
               o = e.follow,
               n = e.alias || t,
               r = this.power.makeSenderFunc(t);
-            this[n] = function (e, a, h) {
+            this[n] = function (e, a) {
               var t = i.getBaseData();
-              r(
-                e,
-                t,
-                function (e, t, n) {
-                  Array.isArray(o) && !e
-                    ? i._followRun(t, n, a, e, o)
-                    : "function" == typeof a && a(e, t, n);
-                },
-                h
-              );
+              r(e, t, function (e, t, n) {
+                Array.isArray(o) && !e
+                  ? i._followRun(t, n, a, e, o)
+                  : "function" == typeof a && a(e, t, n);
+              });
             };
           },
         },

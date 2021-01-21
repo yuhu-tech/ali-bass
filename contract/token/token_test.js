@@ -39,7 +39,7 @@ async function TestTotalSupply() {
 
 async function TestBalanceOf() {
   let output = await token.BalanceOf(
-    "TestToken1611136811000",
+    "TestToken1611218999000",
     "0x60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
   );
   console.log("token balanceof: ", output);
@@ -73,7 +73,7 @@ async function TestApprove() {
 
 async function TestTransfer() {
   let output = await token.Transfer(
-    "TestToken1611136811000",
+    "TestToken1611218999000",
     "sdk-test-ted",
     "f6d61356ccb24e842ed401a7442c749466db45da0dd573b6c6d7fa335b077891",
     "9f26860dd28e5d63fe4d495b172bd7ff2094d73bcf1b4bcb4697d61b15ae280f302d103da78ead8a0df2df48caa4063e46abf4b839bbb9e3147a3366f3156d46",

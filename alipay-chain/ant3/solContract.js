@@ -301,18 +301,15 @@ var coder = require("@alipay/mychain/build/ant3/solidity/coder"),
               o = Util.extractTypeName(r),
               u = this;
             this._setThisFunc(i, a, o, function () {
-              var h = {};
-              "function" == typeof arguments[0]
-                ? ((h = arguments[0]),
-                  (t = Array.prototype.slice.call(arguments, 1)))
-                : (t = Array.prototype.slice.call(arguments));
+              var timestamp = arguments[0],
+                t = Array.prototype.slice.call(arguments, 1);
               u.contract.callApi({
                 type: "function",
                 args: t,
                 signName: a,
                 inputTypes: e,
                 outputTypes: n,
-                hook: h,
+                timestamp: timestamp,
               });
             });
           },

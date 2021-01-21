@@ -47,7 +47,7 @@ function _createClass(e, n, t) {
   );
 }
 var TLS = require("@alipay/mychain/build/ant3/tls"),
-  ApiParamFormat = require("@alipay/mychain/build/ant3/config/apiParamFormat"),
+  ApiParamFormat = require("./config/apiParamFormat"),
   requestGenerator = {
     count: 0,
     callbackMap: {},
@@ -84,7 +84,7 @@ var TLS = require("@alipay/mychain/build/ant3/tls"),
               c.sendCache.length)
             )
               for (var a = c.sendCache.shift(); a; )
-                c._send(a.apiName, a.data, a.baseData, a.callback, a.hook),
+                c._send(a.apiName, a.data, a.baseData, a.callback),
                   (a = c.sendCache.shift());
           } else {
             var r = t.sequence,
@@ -99,22 +99,21 @@ var TLS = require("@alipay/mychain/build/ant3/tls"),
           key: "makeSenderFunc",
           value: function (a) {
             var r = this;
-            return function (e, n, t, h) {
+            return function (e, n, t) {
               r.session_id
-                ? r._send(a, e, n, t, h)
+                ? r._send(a, e, n, t)
                 : r.sendCache.push({
                     apiName: a,
                     data: e,
                     baseData: n,
                     callback: t,
-                    hook: h,
                   });
             };
           },
         },
         {
           key: "_send",
-          value: function (e, n, t, a, h) {
+          value: function (e, n, t, a) {
             var r = requestGenerator.setRequest(function (e, n, t) {
               "function" == typeof a && a(e, n, t);
             });
@@ -123,7 +122,6 @@ var TLS = require("@alipay/mychain/build/ant3/tls"),
             var s = {},
               c = ApiParamFormat[e];
             c && "function" == typeof c.nodeInput && (s = c.nodeInput(e, n, t)),
-              h && "function" == typeof h && h(s.hash),
               this.send(ApiParamFormat.requestTransform(e, s));
           },
         },

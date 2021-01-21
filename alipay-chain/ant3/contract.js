@@ -119,7 +119,6 @@ var Contract = (function () {
                 ? arguments[1]
                 : {},
             a = 2 < arguments.length ? arguments[2] : void 0,
-            h = 3 < arguments.length ? arguments[3] : void 0,
             r = "";
           try {
             (r = this.contractTpl.newInput(t, e.parameters)),
@@ -130,7 +129,10 @@ var Contract = (function () {
           }
           this.deploy_type = 1;
           var c = _objectSpread({}, e);
-          (c.from = e.from), (c.to = this.contractName), (c.data = { code: r });
+          (c.from = e.from),
+            (c.to = this.contractName),
+            (c.data = { code: r }),
+            (c.timestamp = e.timestamp);
           var i = this.client.DeployContract;
           return (
             c.encrypt &&
@@ -139,30 +141,25 @@ var Contract = (function () {
             c.local &&
               ((i = this.client.LocalTransaction),
               (c.apiName = "DeployContract")),
-            i.call(
-              this.client,
-              c,
-              function (t, e) {
-                if (t) n.callbackRun(a, t, n, e);
-                else if (0 === e.return_code)
-                  if (e.receipt)
-                    if (0 === e.receipt.result) {
-                      if ((n.callbackRun(a, null, n, e), n.callCache.length))
-                        for (var r = n.callCache.shift(); r; )
-                          n.contractTpl.doPayload(r), (r = n.callCache.shift());
-                      n.callCache = [];
-                    } else
-                      n.callbackRun(
-                        a,
-                        Errors.receiptResult(e.receipt.result),
-                        n,
-                        e
-                      );
-                  else n.callbackRun(a, Errors.receiptResult(null), n, e);
-                else n.callbackRun(a, Errors.returnCode(e.return_code), n, e);
-              },
-              h
-            ),
+            i.call(this.client, c, function (t, e) {
+              if (t) n.callbackRun(a, t, n, e);
+              else if (0 === e.return_code)
+                if (e.receipt)
+                  if (0 === e.receipt.result) {
+                    if ((n.callbackRun(a, null, n, e), n.callCache.length))
+                      for (var r = n.callCache.shift(); r; )
+                        n.contractTpl.doPayload(r), (r = n.callCache.shift());
+                    n.callCache = [];
+                  } else
+                    n.callbackRun(
+                      a,
+                      Errors.receiptResult(e.receipt.result),
+                      n,
+                      e
+                    );
+                else n.callbackRun(a, Errors.receiptResult(null), n, e);
+              else n.callbackRun(a, Errors.returnCode(e.return_code), n, e);
+            }),
             this
           );
         },
@@ -256,56 +253,52 @@ var Contract = (function () {
                   (r.apiName = "CallContract"));
               var u = !1;
               r.encrypt && (u = !0),
-                n.call(
-                  this.client,
-                  r,
-                  function (t, e, r) {
-                    if (Util.isFunction(l)) {
-                      if (t) return void l(t, null, e, r);
-                      if (0 !== e.return_code)
-                        return void l(
-                          Errors.returnCode(e.return_code),
-                          null,
-                          e,
-                          r
-                        );
-                      if (!e.receipt)
-                        return void l(new Error("Receipt is null"), null, e, r);
-                      if (10201 === e.receipt.result) {
-                        var n = null;
-                        try {
-                          n = i.formatRequireOutput(e.receipt.output);
-                        } catch (t) {
-                          n = null;
-                        }
-                        return void l(
-                          Errors.receiptResult(e.receipt.result),
-                          n,
-                          e,
-                          r
-                        );
-                      }
-                      if (0 !== e.receipt.result)
-                        return void l(
-                          Errors.receiptResult(e.receipt.result),
-                          null,
-                          e,
-                          r
-                        );
-                      if (u) return void l(t, e.receipt.output, e, r);
-                      e = i.formatLog(e);
-                      var a = t,
-                        c = null;
+                (r.timestamp = o.timestamp),
+                n.call(this.client, r, function (t, e, r) {
+                  if (Util.isFunction(l)) {
+                    if (t) return void l(t, null, e, r);
+                    if (0 !== e.return_code)
+                      return void l(
+                        Errors.returnCode(e.return_code),
+                        null,
+                        e,
+                        r
+                      );
+                    if (!e.receipt)
+                      return void l(new Error("Receipt is null"), null, e, r);
+                    if (10201 === e.receipt.result) {
+                      var n = null;
                       try {
-                        c = i.contractTpl.unpackApiOutput(e.receipt.output, o);
+                        n = i.formatRequireOutput(e.receipt.output);
                       } catch (t) {
-                        a = t;
+                        n = null;
                       }
-                      l(a, c, e, r);
+                      return void l(
+                        Errors.receiptResult(e.receipt.result),
+                        n,
+                        e,
+                        r
+                      );
                     }
-                  },
-                  o.hook
-                );
+                    if (0 !== e.receipt.result)
+                      return void l(
+                        Errors.receiptResult(e.receipt.result),
+                        null,
+                        e,
+                        r
+                      );
+                    if (u) return void l(t, e.receipt.output, e, r);
+                    e = i.formatLog(e);
+                    var a = t,
+                      c = null;
+                    try {
+                      c = i.contractTpl.unpackApiOutput(e.receipt.output, o);
+                    } catch (t) {
+                      a = t;
+                    }
+                    l(a, c, e, r);
+                  }
+                });
             }
           else
             Util.isFunction(l) &&
