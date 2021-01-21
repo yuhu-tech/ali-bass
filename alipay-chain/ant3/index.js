@@ -19,7 +19,7 @@ function _createClass(e, t, r) {
 }
 var Util = require("@alipay/mychain/build/ant3/util"),
   API = require("./api"),
-  Event = require("@alipay/mychain/build/ant3/event"),
+  Event = require("./event"),
   VmType = require("@alipay/mychain/build/ant3/config/vmType"),
   MyChain = (function () {
     function i(e, t, r) {

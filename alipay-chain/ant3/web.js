@@ -17,9 +17,9 @@ function _createClass(e, t, n) {
     t && _defineProperties(e.prototype, t), n && _defineProperties(e, n), e
   );
 }
-var httpMethod = require("@alipay/mychain/build/ant3/config/httpMethod"),
-  ApiParamFormat = require("@alipay/mychain/build/ant3/config/apiParamFormat"),
-  Request = require("@alipay/mychain/build/ant3/request"),
+var httpMethod = require("./config/httpMethod"),
+  ApiParamFormat = require("./config/apiParamFormat"),
+  Request = require("./request"),
   httpOutput = ApiParamFormat.httpOutput,
   Webjs = (function () {
     function e() {
@@ -31,14 +31,13 @@ var httpMethod = require("@alipay/mychain/build/ant3/config/httpMethod"),
           key: "makeSenderFunc",
           value: function (a) {
             var o = this;
-            return function (e, t, n, h) {
+            return function (e, t, n) {
               t.transaction_type = ApiParamFormat[a].transaction_type;
               var r = {},
                 i = ApiParamFormat[a];
               i &&
                 "function" == typeof i.httpInput &&
                 (r = i.httpInput(a, e, t)),
-                h && "function" == typeof h && h(r.hash),
                 o._send(
                   e.version || o.version,
                   httpMethod[a] || "",

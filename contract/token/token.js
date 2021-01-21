@@ -41,6 +41,7 @@ function Deploy(
       {
         from: from,
         parameters: [name, symbol, decimals, totalSupply],
+        timestamp: Date.now(),
       },
       (err, contract, data) => {
         if (err != null) {
@@ -48,9 +49,6 @@ function Deploy(
         } else {
           resolve(data);
         }
-      },
-      (txhash) => {
-        console.log("===========txhash: ", txhash);
       }
     );
   });
@@ -59,52 +57,68 @@ function Deploy(
 function Name(contractName) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
-    tokenContract.name({ from: conf.AccountId }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    tokenContract.name(
+      Date.now(),
+      { from: conf.AccountId },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
 function Symbol(contractName) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
-    tokenContract.symbol({ from: conf.AccountId }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    tokenContract.symbol(
+      Date.now(),
+      { from: conf.AccountId },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
 function Decimals(contractName) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
-    tokenContract.decimals({ from: conf.AccountId }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    tokenContract.decimals(
+      Date.now(),
+      { from: conf.AccountId },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
 function TotalSupply(contractName) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
-    tokenContract.totalSupply({ from: conf.AccountId }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    tokenContract.totalSupply(
+      Date.now(),
+      { from: conf.AccountId },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
@@ -112,6 +126,7 @@ function BalanceOf(contractName, account) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.balanceOf(
+      Date.now(),
       account,
       { from: conf.AccountId },
       (err, output, data) => {
@@ -128,13 +143,17 @@ function BalanceOf(contractName, account) {
 function IsOwner(contractName) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
-    tokenContract.isOwner({ from: conf.AccountId }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    tokenContract.isOwner(
+      Date.now(),
+      { from: conf.AccountId },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
@@ -142,6 +161,7 @@ function Allowance(contractName, owner, spender) {
   return new Promise((resolve, reject) => {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.allowance(
+      Date.now(),
       owner,
       spender,
       { from: conf.AccountId },
@@ -165,13 +185,19 @@ function Approve(contractName, from, priK, pubK, to, value) {
     env.chain.setUserKey(env.opt);
     env.chain.setUserRecoverKey(env.opt);
     let myContract = env.chain.ctr.contract(contractName, abi);
-    myContract.approve(to, value, { from: from }, (err, output, data) => {
-      if (err != null) {
-        reject(err);
-      } else {
-        resolve(output);
+    myContract.approve(
+      Date.now(),
+      to,
+      value,
+      { from: from },
+      (err, output, data) => {
+        if (err != null) {
+          reject(err);
+        } else {
+          resolve(output);
+        }
       }
-    });
+    );
   });
 }
 
@@ -183,12 +209,9 @@ function Transfer(contractName, from, priK, pubK, to, value) {
     env.opt.userRecoverPrivateKey = priK;
     env.chain.setUserKey(env.opt);
     env.chain.setUserRecoverKey(env.opt);
-
     let myContract = env.chain.ctr.contract(contractName, abi);
     myContract.transfer(
-      (txhash) => {
-        console.log("========== Transfer txhash: ", txhash); // 调用合约内非 constant 方法，第一个参数必须是 hook 函数
-      },
+      Date.now(), // 时间戳必须为第一个入参
       to,
       value,
       { from: from },
