@@ -302,7 +302,8 @@ var coder = require("@alipay/mychain/build/ant3/solidity/coder"),
               u = this;
             this._setThisFunc(i, a, o, function () {
               var timestamp = arguments[0],
-                t = Array.prototype.slice.call(arguments, 1);
+                isMakeHash = arguments[1],
+                t = Array.prototype.slice.call(arguments, 2);
               u.contract.callApi({
                 type: "function",
                 args: t,
@@ -310,6 +311,7 @@ var coder = require("@alipay/mychain/build/ant3/solidity/coder"),
                 inputTypes: e,
                 outputTypes: n,
                 timestamp: timestamp,
+                isMakeHash: isMakeHash,
               });
             });
           },

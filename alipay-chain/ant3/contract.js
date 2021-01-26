@@ -48,6 +48,8 @@ function _createClass(t, e, r) {
 }
 var Util = require("@alipay/mychain/build/ant3/util"),
   Errors = require("@alipay/mychain/build/ant3/errors"),
+  ApiName = require("@alipay/mychain/build/ant3/config/apiName"),
+  ApiParamFormat = require("./config/apiParamFormat"),
   VmType = require("@alipay/mychain/build/ant3/config/vmType"),
   SolContract = require("./solContract"),
   WasmContract = require("@alipay/mychain/build/ant3/wasmContract");
@@ -114,11 +116,13 @@ var Contract = (function () {
         key: "new",
         value: function (t) {
           var n = this,
+            timestamp = 1 < arguments.length ? arguments[1] : void 0,
+            isMakeHash = 2 < arguments.length ? arguments[2] : void 0,
             e =
-              1 < arguments.length && void 0 !== arguments[1]
-                ? arguments[1]
+              3 < arguments.length && void 0 !== arguments[3]
+                ? arguments[3]
                 : {},
-            a = 2 < arguments.length ? arguments[2] : void 0,
+            a = 4 < arguments.length ? arguments[4] : void 0,
             r = "";
           try {
             (r = this.contractTpl.newInput(t, e.parameters)),
@@ -132,36 +136,52 @@ var Contract = (function () {
           (c.from = e.from),
             (c.to = this.contractName),
             (c.data = { code: r }),
-            (c.timestamp = e.timestamp);
+            (c.timestamp = timestamp);
           var i = this.client.DeployContract;
-          return (
-            c.encrypt &&
-              ((i = this.client.EncryptedTransaction),
-              (c.apiName = "DeployContract")),
-            c.local &&
-              ((i = this.client.LocalTransaction),
-              (c.apiName = "DeployContract")),
-            i.call(this.client, c, function (t, e) {
-              if (t) n.callbackRun(a, t, n, e);
-              else if (0 === e.return_code)
-                if (e.receipt)
-                  if (0 === e.receipt.result) {
-                    if ((n.callbackRun(a, null, n, e), n.callCache.length))
-                      for (var r = n.callCache.shift(); r; )
-                        n.contractTpl.doPayload(r), (r = n.callCache.shift());
-                    n.callCache = [];
-                  } else
-                    n.callbackRun(
-                      a,
-                      Errors.receiptResult(e.receipt.result),
-                      n,
-                      e
-                    );
-                else n.callbackRun(a, Errors.receiptResult(null), n, e);
-              else n.callbackRun(a, Errors.returnCode(e.return_code), n, e);
-            }),
-            this
-          );
+          if (isMakeHash) {
+            var deployApiName = ApiName.DeployContract;
+            var deployApiParam = ApiParamFormat[deployApiName];
+            var baseData = this.client.getBaseData();
+            baseData.transaction_type = deployApiParam.transaction_type;
+            var transaction = {};
+            deployApiParam &&
+              "function" == typeof deployApiParam.nodeInput &&
+              (transaction = deployApiParam.nodeInput(
+                deployApiName,
+                c,
+                baseData
+              ));
+            return a(null, null, transaction), this;
+          } else {
+            return (
+              c.encrypt &&
+                ((i = this.client.EncryptedTransaction),
+                (c.apiName = "DeployContract")),
+              c.local &&
+                ((i = this.client.LocalTransaction),
+                (c.apiName = "DeployContract")),
+              i.call(this.client, c, function (t, e) {
+                if (t) n.callbackRun(a, t, n, e);
+                else if (0 === e.return_code)
+                  if (e.receipt)
+                    if (0 === e.receipt.result) {
+                      if ((n.callbackRun(a, null, n, e), n.callCache.length))
+                        for (var r = n.callCache.shift(); r; )
+                          n.contractTpl.doPayload(r), (r = n.callCache.shift());
+                      n.callCache = [];
+                    } else
+                      n.callbackRun(
+                        a,
+                        Errors.receiptResult(e.receipt.result),
+                        n,
+                        e
+                      );
+                  else n.callbackRun(a, Errors.receiptResult(null), n, e);
+                else n.callbackRun(a, Errors.returnCode(e.return_code), n, e);
+              }),
+              this
+            );
+          }
         },
       },
       {
@@ -252,8 +272,22 @@ var Contract = (function () {
                   ((n = this.client.LocalTransaction),
                   (r.apiName = "CallContract"));
               var u = !1;
-              r.encrypt && (u = !0),
-                (r.timestamp = o.timestamp),
+              r.encrypt && (u = !0), (r.timestamp = o.timestamp);
+              if (o.isMakeHash) {
+                var callApiName = ApiName.CallContract;
+                var callApiParam = ApiParamFormat[callApiName];
+                var baseData = this.client.getBaseData();
+                baseData.transaction_type = callApiParam.transaction_type;
+                var transaction = {};
+                callApiParam &&
+                  "function" == typeof callApiParam.nodeInput &&
+                  (transaction = callApiParam.nodeInput(
+                    callApiName,
+                    r,
+                    baseData
+                  ));
+                return l(null, null, transaction), this;
+              } else {
                 n.call(this.client, r, function (t, e, r) {
                   if (Util.isFunction(l)) {
                     if (t) return void l(t, null, e, r);
@@ -299,6 +333,7 @@ var Contract = (function () {
                     l(a, c, e, r);
                   }
                 });
+              }
             }
           else
             Util.isFunction(l) &&
