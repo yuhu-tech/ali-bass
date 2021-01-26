@@ -1,16 +1,16 @@
 const transaction = require('./transaction')
 
 async function QueryTransaction() {
-    var res = await transaction.QueryTransaction('0xdee4a1f2fa48b5c8f4e208cfd62cdf460df7732ae2748ce95a761e05682fb1e2')
+    var res = await transaction.QueryTransaction('0x6012eed5864fb2c3b13052ab9c5ebcee49f9ab59b46a0bd438ba0fb5f055f6d1')
     console.log(res)
     process.exit()
 }
 
 async function QueryTransactionReceipt(params) {
-    var res = await transaction.QueryTransactionReceipt('0xdee4a1f2fa48b5c8f4e208cfd62cdf460df7732ae2748ce95a761e05682fb1e2')
+    var res = await transaction.QueryTransactionReceipt('0x6012eed5864fb2c3b13052ab9c5ebcee49f9ab59b46a0bd438ba0fb5f055f6d1')
     console.log(res)
     process.exit()
 }
 
-QueryTransaction()
-// QueryTransactionReceipt()
+// QueryTransaction()
+QueryTransactionReceipt()

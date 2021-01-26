@@ -18,36 +18,28 @@ const bytecode = fs.readFileSync(
   )
 );
 
-function Deploy(
-  contractName,
-  from,
-  priK,
-  pubK,
-  name,
-  symbol,
-  decimals,
-  totalSupply
-) {
+function Deploy(req) {
   return new Promise((resolve, reject) => {
-    env.opt.userPublicKey = pubK;
-    env.opt.userPrivateKey = priK;
-    env.opt.userRecoverPublicKey = pubK;
-    env.opt.userRecoverPrivateKey = priK;
+    env.opt.userPublicKey = req.pubK;
+    env.opt.userPrivateKey = req.priK;
+    env.opt.userRecoverPublicKey = req.pubK;
+    env.opt.userRecoverPrivateKey = req.priK;
     env.chain.setUserKey(env.opt);
     env.chain.setUserRecoverKey(env.opt);
-    let tokenContract = env.chain.ctr.contract(contractName, abi);
+    let tokenContract = env.chain.ctr.contract(req.contractName, abi);
     tokenContract.new(
       bytecode,
+      req.timestamp,
+      req.isMakeHash,
       {
-        from: from,
-        parameters: [name, symbol, decimals, totalSupply],
-        timestamp: Date.now(),
+        from: req.from,
+        parameters: [req.name, req.symbol, req.decimals, req.totalSupply],
       },
       (err, contract, data) => {
         if (err != null) {
           reject(err);
         } else {
-          resolve(data);
+          resolve({ contract: contract, data: data });
         }
       }
     );
@@ -59,6 +51,7 @@ function Name(contractName) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.name(
       Date.now(),
+      false,
       { from: conf.AccountId },
       (err, output, data) => {
         if (err != null) {
@@ -76,6 +69,7 @@ function Symbol(contractName) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.symbol(
       Date.now(),
+      false,
       { from: conf.AccountId },
       (err, output, data) => {
         if (err != null) {
@@ -93,6 +87,7 @@ function Decimals(contractName) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.decimals(
       Date.now(),
+      false,
       { from: conf.AccountId },
       (err, output, data) => {
         if (err != null) {
@@ -110,6 +105,7 @@ function TotalSupply(contractName) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.totalSupply(
       Date.now(),
+      false,
       { from: conf.AccountId },
       (err, output, data) => {
         if (err != null) {
@@ -127,6 +123,7 @@ function BalanceOf(contractName, account) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.balanceOf(
       Date.now(),
+      false,
       account,
       { from: conf.AccountId },
       (err, output, data) => {
@@ -145,6 +142,7 @@ function IsOwner(contractName) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.isOwner(
       Date.now(),
+      false,
       { from: conf.AccountId },
       (err, output, data) => {
         if (err != null) {
@@ -162,6 +160,7 @@ function Allowance(contractName, owner, spender) {
     let tokenContract = env.chain.ctr.contract(contractName, abi);
     tokenContract.allowance(
       Date.now(),
+      false,
       owner,
       spender,
       { from: conf.AccountId },
@@ -176,50 +175,52 @@ function Allowance(contractName, owner, spender) {
   });
 }
 
-function Approve(contractName, from, priK, pubK, to, value) {
+function Approve(req) {
   return new Promise((resolve, reject) => {
-    env.opt.userPublicKey = pubK;
-    env.opt.userPrivateKey = priK;
-    env.opt.userRecoverPublicKey = pubK;
-    env.opt.userRecoverPrivateKey = priK;
+    env.opt.userPublicKey = req.pubK;
+    env.opt.userPrivateKey = req.priK;
+    env.opt.userRecoverPublicKey = req.pubK;
+    env.opt.userRecoverPrivateKey = req.priK;
     env.chain.setUserKey(env.opt);
     env.chain.setUserRecoverKey(env.opt);
-    let myContract = env.chain.ctr.contract(contractName, abi);
+    let myContract = env.chain.ctr.contract(req.contractName, abi);
     myContract.approve(
-      Date.now(),
-      to,
-      value,
-      { from: from },
+      req.timestamp,
+      req.isMakeHash,
+      req.to,
+      req.value,
+      { from: req.from },
       (err, output, data) => {
         if (err != null) {
           reject(err);
         } else {
-          resolve(output);
+          resolve({ output: output, data: data });
         }
       }
     );
   });
 }
 
-function Transfer(contractName, from, priK, pubK, to, value) {
+function Transfer(req) {
   return new Promise((resolve, reject) => {
-    env.opt.userPublicKey = pubK;
-    env.opt.userPrivateKey = priK;
-    env.opt.userRecoverPublicKey = pubK;
-    env.opt.userRecoverPrivateKey = priK;
+    env.opt.userPublicKey = req.pubK;
+    env.opt.userPrivateKey = req.priK;
+    env.opt.userRecoverPublicKey = req.pubK;
+    env.opt.userRecoverPrivateKey = req.priK;
     env.chain.setUserKey(env.opt);
     env.chain.setUserRecoverKey(env.opt);
-    let myContract = env.chain.ctr.contract(contractName, abi);
+    let myContract = env.chain.ctr.contract(req.contractName, abi);
     myContract.transfer(
-      Date.now(), // 时间戳必须为第一个入参
-      to,
-      value,
-      { from: from },
+      req.timestamp, // 时间戳必须为第一个入参
+      req.isMakeHash,
+      req.to,
+      req.value,
+      { from: req.from },
       (err, output, data) => {
         if (err != null) {
           reject(err);
         } else {
-          resolve(output);
+          resolve({ output: output, data: data });
         }
       }
     );
