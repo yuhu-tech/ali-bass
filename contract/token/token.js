@@ -6,7 +6,7 @@ const abi = JSON.parse(
   fs.readFileSync(
     path.join(
       __dirname,
-      "../../generate/token/solidity_token_Token_sol_Token.abi"
+      "../../generate/token/token.abi"
     ),
     String
   )
@@ -14,7 +14,7 @@ const abi = JSON.parse(
 const bytecode = fs.readFileSync(
   path.join(
     __dirname,
-    "../../generate/token/solidity_token_Token_sol_Token.bin"
+    "../../generate/token/token.bin"
   )
 );
 
