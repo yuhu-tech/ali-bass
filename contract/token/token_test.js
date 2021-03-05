@@ -14,8 +14,8 @@ async function TestDeploy() {
     symbol: "TTT",
     decimals: 4,
     totalSupply: 100000000,
-    timestamp: Date.now,
-    isMakeHash: true, // true:make txhash false:send transaction
+    timestamp: Date.now(),
+    isMakeHash: false, // true:make txhash false:send transaction
   });
   console.log(res.data);
 }

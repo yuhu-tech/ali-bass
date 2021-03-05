@@ -1,4 +1,5 @@
-const Chain = require("../alipay-chain/index.node") //在node 环境使用 TLS 协议
+const Chain = require("../alipay-chain/index.node") // ted
+// const Chain = require("@alipay/mychain/index.node") // ali
 const fs = require("fs")
 const path = require('path')
 const conf = require("../conf/config")

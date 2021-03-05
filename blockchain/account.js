@@ -7,6 +7,7 @@ function CreateAccount(from, userId) {
         const privateKey = newKey.privateKey.toString('hex')
         const publicKey = newKey.publicKey.toString('hex')
         env.chain.ctr.CreateAccount({
+            timestamp: Date.now(),
             from: from,
             to: userId,
             data: {
