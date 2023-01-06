@@ -4,7 +4,7 @@
   "description": "Using Truffle",
   "devDependencies": {
     "babel-preset-es2015": "~6.24.1",
-    "babelify": "~7.3.0",
+    "babelify": "~10.0.0",
     "bluebird": "^3.5.1",
     "browserify": "~14.3.0",
     "jquery": "~3.5.0",
